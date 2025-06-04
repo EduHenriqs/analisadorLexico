@@ -4,7 +4,7 @@ function gerarSentenca(producao) {
     let sentenca = producao.innerText.split("->");
 
     if (sentenca[1].trim() == "ε") {
-        $(".table").addClass("table-success");
+        $("#tabela-gera-sentenca").addClass("table-success");
         $("#msg-finalizado").removeClass("d-none");
         var resultado = input.val().replace("C", "");
         input.val(resultado);
@@ -82,7 +82,7 @@ function gerarSentenca(producao) {
 
     if (input.val() != "") {
 
-        const naoTerminal = ['A', 'B', 'C', 'D'];
+        const naoTerminal = ['S', 'A', 'B', 'C', 'D'];
 
         sentencaExplodida = input.val().trim().split("");
 
@@ -104,29 +104,84 @@ function abrirModal() {
 
     $(".modal-body").html('');
 
-    $(".modal-body").html('<div class="row d-none" id="msg-finalizado"><div class="col-md-12 text-center"><h4>Sentença Finalizada</h4></div></div><table class="table table-bordered"><thead class="text-center"><th>-</th><th>a</th><th>b</th><th>c</th><th>d</th><th>$</th></thead><tbody class="text-center"><tr class="table-success" id="S"><td>S</td><td>-</td><td onclick="gerarSentenca(this)" class="cursor-pointer">S -> bA</td><td>-</td><td>-</td><td>-</td></tr><tr id="A"><td>A</td><td>A -> aAd</td><td>-</td><td>A -> cC</td><td>A -> dC</td><td>-</td></tr><tr id="B"><td>B</td><td>-</td><td>B -> bBa</td><td>B -> cDc</td><td>B -> dA</td><td>-</td></tr><tr id="C"><td>C</td><td>C -> Ab</td><td>C -> bDa</td><td>C -> Ab</td><td>C -> Ab</td><td>C -> ε</td></tr><tr id="D"><td>D</td><td>-</td><td>D -> bC</td><td>-</td><td>D -> dS</td><td>-</td></tr></tbody></table><label for="">Sentença Atual</label><input readonly type="text" name="sentenca_prov" id="sentenca_prov" class="form-control disabled" value=""></input>');
+    $(".modal-body").html('<div class="row d-none" id="msg-finalizado"><div class="col-md-12 text-center"><h4>Sentença Finalizada</h4></div></div><table class="table table-bordered" id="tabela-gera-sentenca"><thead class="text-center"><th>-</th><th>a</th><th>b</th><th>c</th><th>d</th><th>$</th></thead><tbody class="text-center"><tr class="table-success" id="S"><td>S</td><td>-</td><td onclick="gerarSentenca(this)" class="cursor-pointer">S -> bA</td><td>-</td><td>-</td><td>-</td></tr><tr id="A"><td>A</td><td>A -> aAd</td><td>-</td><td>A -> cC</td><td>A -> dC</td><td>-</td></tr><tr id="B"><td>B</td><td>-</td><td>B -> bBa</td><td>B -> cDc</td><td>B -> dA</td><td>-</td></tr><tr id="C"><td>C</td><td>C -> Ab</td><td>C -> bDa</td><td>C -> Ab</td><td>C -> Ab</td><td>C -> ε</td></tr><tr id="D"><td>D</td><td>-</td><td>D -> bC</td><td>-</td><td>D -> dS</td><td>-</td></tr></tbody></table><label for="">Sentença Atual</label><input readonly type="text" name="sentenca_prov" id="sentenca_prov" class="form-control disabled" value=""></input>');
 }
-
-
 
 function montaPilha() {
 
     let sentenca = $("#sentenca").val();
     let pilha = $("#pilha");
+    $("#div-pilha").removeClass("d-none");
     pilha.html("");
     let html = "";
 
     if (sentenca != "") {
         let sentencaExplodida = sentenca.split("");
         sentencaExplodida.forEach(function (letra) {
-            console.log(letra);
             html += `<li class="page-item"><a class="page-link">${letra}</a></li>`
-
         })
-
         html += '<li class="page-item"><a class="page-link">$</a></li>'
-
         pilha.html(html);
     }
+
+}
+
+
+function reconhecimento() {
+
+    const terminal = ['a', 'b', 'c', 'd', 'ε'];
+    const naoTerminal = ['A', 'B', 'C', 'D'];
+    const finalPilha = ['$'];
+
+    const parsingTable = {
+        S: {
+            a: null,
+            b: "bA",
+            c: null,
+            d: null,
+            $: null
+        },
+        A: {
+            a: "aAd",
+            b: null,
+            c: "cC",
+            d: "dC",
+            $: null
+        },
+        B: {
+            a: null,
+            b: "bBa",
+            c: "cDc",
+            d: "dA",
+            $: null
+        },
+        C: {
+            a: "Ab",
+            b: "bDa",
+            c: "Ab",
+            d: "Ab",
+            $: "ε"
+        },
+        D: {
+            a: null,
+            b: null,
+            c: null,
+            d: "dS",
+            $: null
+        }
+    };
+
+
+    let entrada = "";
+
+    $("#tabela-pilha").removeClass("d-none");
+
+    //$('#pilha:first-child a').addClass("active");
+
+    $("#pilha li").each(function (index, item) {
+        entrada += item.innerText;
+    })
+
+    $("#inicio").text(entrada)
 
 }

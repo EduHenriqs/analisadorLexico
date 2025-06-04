@@ -10,6 +10,7 @@
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/scripts.js"></script>
+
 </head>
 
 <body class="bg-body-secondary">
@@ -17,322 +18,306 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="card mt-5">
-                    <div class="card-header p-0 border border-bottom-0">
-                        <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="analisador-tab" data-bs-toggle="tab"
-                                    data-bs-target="#analisador-tab-pane" type="button" role="tab"
-                                    aria-controls="analisador-tab-pane" aria-selected="true">Analisador</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="gramatica-tab" data-bs-toggle="tab"
-                                    data-bs-target="#gramatica-tab-pane" type="button" role="tab"
-                                    aria-controls="gramatica-tab-pane" aria-selected="false">Gramática</button>
-                            </li>
-                        </ul>
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-9 d-flex align-self-center">
+                                <h4 class="m-0">Analisador Léxico</h4>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
+                                    data-bs-target="#offcanvasWithBothOptions"
+                                    aria-controls="offcanvasWithBothOptions">Gramática </button>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="analisador-tab-pane" role="tabpanel"
-                                aria-labelledby="analisador-tab" tabindex="0">
-                                <div class="row">
-                                    <div class="col-md-9">
-                                        <label>Sentença</label>
-                                        <input type="text" name="sentenca" id="sentenca" class="form-control"
-                                            onchange="montaPilha()">
-                                    </div>
-                                    <div class="col-md-3 d-grid align-itens-center"><br>
-                                        <button type="button" class="btn btn-custom" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModal" onclick="abrirModal()">
-                                            Gerar Senteça
-                                        </button>
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-10">
+                                <label>Sentença</label>
+                                <input type="text" name="sentenca" id="sentenca" class="form-control"
+                                    onchange="montaPilha()">
+                            </div>
 
-                                    <div class="col-md-6 d-grid mt-3">
-                                        <button class="btn btn-custom" type="button">Reconhecimento Passo a
-                                            Passo</button>
-                                    </div>
-                                    <div class="col-md-6 d-grid mt-3">
-                                        <button class="btn btn-custom" type="button">Reconhecimento Automático</button>
-                                    </div>
+                            <div class="col-md-2 d-grid align-itens-center"><br>
+                                <button type="button" class="btn btn-custom" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModal" onclick="abrirModal()">
+                                    Gerar Senteça
+                                </button>
+                            </div>
 
-                                    <div class="col-md-12 mt-3 d-flex align-itens-center justify-content-center">
-                                        <div>
-                                            <h5>Pilha do cabeçote</h5><BR>
-                                        </div>
-                                        <nav aria-label="...">
-                                            <ul class="pagination pagination-lg" id="pilha">
+                            <div class="col-md-6 d-grid mt-3">
+                                <button class="btn btn-custom" type="button" onclick="reconhecimento()">Reconhecimento
+                                    Passo a
+                                    Passo</button>
+                            </div>
+                            <div class="col-md-6 d-grid mt-3">
+                                <button class="btn btn-custom" type="button" onclick="reconhecimento()">Reconhecimento
+                                    Direto</button>
+                            </div>
 
+                            <div class="col-md-12 mt-3 d-none text-center" id="div-pilha">
+                                <h5>Entrada</h5>
+                                <div class="d-flex justify-content-center">
+                                    <ul class="pagination pagination-lg text-center" id="pilha">
+                                    </ul>
+                                </div>
+                                <table class="table table-bordered d-none" id="tabela-pilha">
+                                    <thead>
+                                        <th>Pilha</th>
+                                        <th>Entrada</th>
+                                        <th>Ação</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>$S</td>
+                                            <td id="inicio"></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                                            </ul>
-                                        </nav>
-                                    </div>
-
+        <div class="offcanvas offcanvas-bottom" data-bs-scroll="true" tabindex="-1" id="offcanvasWithBothOptions"
+            aria-labelledby="offcanvasWithBothOptionsLabel" style="height: 75%;">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasWithBothOptionsLabel">Regras da Gramática</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Gramática</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover">
+                                        <tbody>
+                                            <tr class="m-1">
+                                                <th class="text-center border border-0">S ::=</th>
+                                                <td class="text-center border border-0">bA</td>
+                                                <td class="text-center border border-0"></td>
+                                                <td class="text-center border border-0"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">A ::=</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    aAd</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    cC</td>
+                                                <td class="text-center border border-0">dC</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">B ::=</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    bBa</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    dA</td>
+                                                <td class="text-center border border-0">cDc</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">C ::=</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    Ab</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    bDa</td>
+                                                <td class="text-center border border-0">ε</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">D ::=</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    dS</td>
+                                                <td class="text-center border border-0">bC</td>
+                                                <td class="text-center border border-0"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="gramatica-tab-pane" role="tabpanel"
-                                aria-labelledby="gramatica-tab" tabindex="0">
-                                <div class="row">
-                                    <div class="col-md-4 mb-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h4>Gramática</h4>
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm table-hover">
-                                                        <tbody>
-                                                            <tr class="m-1">
-                                                                <th class="text-center border border-0">S ::=</th>
-                                                                <td class="text-center border border-0">bA</td>
-                                                                <td class="text-center border border-0"></td>
-                                                                <td class="text-center border border-0"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">A ::=</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    aAd</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    cC</td>
-                                                                <td class="text-center border border-0">dC</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">B ::=</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    bBa</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    dA</td>
-                                                                <td class="text-center border border-0">cDc</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">C ::=</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    Ab</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    bDa</td>
-                                                                <td class="text-center border border-0">ε</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">D ::=</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    dS</td>
-                                                                <td class="text-center border border-0">bC</td>
-                                                                <td class="text-center border border-0"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h4>First</h4>
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm table-hover">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th class="text-center border border-0">S =</th>
-                                                                <td class="text-center border border-0">b</td>
-                                                                <td class="text-center border border-0"></td>
-                                                                <td class="text-center border border-0"></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">A =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    a</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    c</td>
-                                                                <td class="text-center border border-0">d</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">B =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    b</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    d</td>
-                                                                <td class="text-center border border-0">c</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">C =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    a</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    c</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    d</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    b</td>
-                                                                <td class="text-center border border-0">ε</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">D =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    d</td>
-                                                                <td class="text-center border border-0">b</td>
-                                                                <td class="text-center border border-0"></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>First</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <th class="text-center border border-0">S =</th>
+                                                <td class="text-center border border-0">b</td>
+                                                <td class="text-center border border-0"></td>
+                                                <td class="text-center border border-0"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">A =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    a</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    c</td>
+                                                <td class="text-center border border-0">d</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">B =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    b</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    d</td>
+                                                <td class="text-center border border-0">c</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">C =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    a</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    c</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    d</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    b</td>
+                                                <td class="text-center border border-0">ε</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">D =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    d</td>
+                                                <td class="text-center border border-0">b</td>
+                                                <td class="text-center border border-0"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
-                                    </div>
-                                    <div class="col-md-4 mb-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h4>Follow</h4>
-                                                <div class="table-responsive">
-                                                    <table class="table table-sm table-hover">
-                                                        <tbody>
-                                                            <tr>
-                                                                <th class="text-center border border-0">S =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    $</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    a</td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    c</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">A =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    $
-                                                                </td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    a
-                                                                </td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    b
-                                                                </td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    c
-                                                                </td>
-                                                                <td class="text-center border border-0">
-                                                                    d
-                                                                </td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">B =</th>
-                                                                <td class="text-center border border-0">a</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">C =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    $
-                                                                </td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    a
-                                                                </td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    b
-                                                                </td>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    c
-                                                                </td>
-                                                                <td class="text-center border border-0">d</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <th class="text-center border border-0">D =</th>
-                                                                <td
-                                                                    class="text-center border border-0 border-end border-dark">
-                                                                    a
-                                                                </td>
-                                                                <td class="text-center border border-0">c</td>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <h4>Tabela de Parsing</h4>
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered">
-                                                        <thead class="text-center">
-                                                            <th>-</th>
-                                                            <th>a</th>
-                                                            <th>b</th>
-                                                            <th>c</th>
-                                                            <th>d</th>
-                                                            <th>$</th>
-                                                        </thead>
-                                                        <tbody class="text-center">
-                                                            <tr>
-                                                                <td>S</td>
-                                                                <td>-</td>
-                                                                <td>S -> bA</td>
-                                                                <td>-</td>
-                                                                <td>-</td>
-                                                                <td>-</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>A</td>
-                                                                <td>A -> aAd</td>
-                                                                <td>-</td>
-                                                                <td>A -> cC</td>
-                                                                <td>A -> dC</td>
-                                                                <td>-</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>B</td>
-                                                                <td>-</td>
-                                                                <td>B -> bBa</td>
-                                                                <td>B -> cDc</td>
-                                                                <td>B -> dA</td>
-                                                                <td>-</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>C</td>
-                                                                <td>C -> Ab</td>
-                                                                <td>C -> bDa</td>
-                                                                <td>C -> Ab</td>
-                                                                <td>C -> Ab</td>
-                                                                <td>C -> ε</td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>D</td>
-                                                                <td>-</td>
-                                                                <td>D -> bC</td>
-                                                                <td>-</td>
-                                                                <td>D -> dS</td>
-                                                                <td>-</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Follow</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-hover">
+                                        <tbody>
+                                            <tr>
+                                                <th class="text-center border border-0">S =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    $</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    a</td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    c</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">A =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    $
+                                                </td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    a
+                                                </td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    b
+                                                </td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    c
+                                                </td>
+                                                <td class="text-center border border-0">
+                                                    d
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">B =</th>
+                                                <td class="text-center border border-0">a</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">C =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    $
+                                                </td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    a
+                                                </td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    b
+                                                </td>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    c
+                                                </td>
+                                                <td class="text-center border border-0">d</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-center border border-0">D =</th>
+                                                <td class="text-center border border-0 border-end border-dark">
+                                                    a
+                                                </td>
+                                                <td class="text-center border border-0">c</td>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h4>Tabela de Parsing</h4>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead class="text-center">
+                                            <th>-</th>
+                                            <th>a</th>
+                                            <th>b</th>
+                                            <th>c</th>
+                                            <th>d</th>
+                                            <th>$</th>
+                                        </thead>
+                                        <tbody class="text-center">
+                                            <tr>
+                                                <td>S</td>
+                                                <td>-</td>
+                                                <td>S -> bA</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>A</td>
+                                                <td>A -> aAd</td>
+                                                <td>-</td>
+                                                <td>A -> cC</td>
+                                                <td>A -> dC</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>B</td>
+                                                <td>-</td>
+                                                <td>B -> bBa</td>
+                                                <td>B -> cDc</td>
+                                                <td>B -> dA</td>
+                                                <td>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>C</td>
+                                                <td>C -> Ab</td>
+                                                <td>C -> bDa</td>
+                                                <td>C -> Ab</td>
+                                                <td>C -> Ab</td>
+                                                <td>C -> ε</td>
+                                            </tr>
+                                            <tr>
+                                                <td>D</td>
+                                                <td>-</td>
+                                                <td>D -> bC</td>
+                                                <td>-</td>
+                                                <td>D -> dS</td>
+                                                <td>-</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -340,6 +325,9 @@
                 </div>
             </div>
         </div>
+
+
+
 
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
             data-bs-backdrop="static">
