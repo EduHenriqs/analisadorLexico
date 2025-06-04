@@ -130,7 +130,7 @@ function montaPilha() {
 function reconhecimento() {
 
     const terminal = ['a', 'b', 'c', 'd', 'ε'];
-    const naoTerminal = ['A', 'B', 'C', 'D'];
+    const naoTerminal = ['A', 'B', 'C', 'D', 'S'];
     const finalPilha = ['$'];
 
     const parsingTable = {
@@ -168,6 +168,21 @@ function reconhecimento() {
             c: null,
             d: "dS",
             $: null
+        },
+        a: {
+            a: "ler"
+        },
+        b: {
+            b: "ler"
+        },
+        c: {
+            c: "ler"
+        },
+        d: {
+            d: "ler"
+        },
+        $: {
+            $: "terminar"
         }
     };
 
@@ -175,13 +190,69 @@ function reconhecimento() {
     let entrada = "";
 
     $("#tabela-pilha").removeClass("d-none");
-
-    //$('#pilha:first-child a').addClass("active");
-
+    $('ul li:first').addClass('active');
     $("#pilha li").each(function (index, item) {
         entrada += item.innerText;
-    })
+    });
+    $("#tabela-pilha tbody tr:last td").eq(1).text(entrada);
 
-    $("#inicio").text(entrada)
+    let entradaAtual = entrada[0];
+    let pilhaAtual = $('#tabela-pilha tbody tr:last td:first').text().split('').reverse().join('');
+    let acaoAtual = $('#tabela-pilha tbody tr:last td:last');
+
+
+    if (parsingTable[pilhaAtual[0]][entradaAtual] != null && parsingTable[pilhaAtual[0]][entradaAtual] != 'ler' && parsingTable[pilhaAtual[0]][entradaAtual] != 'terminar') {
+        let producao = parsingTable[pilhaAtual[0]][entradaAtual]
+        acaoAtual.text([pilhaAtual[0]] + "->" + producao);
+        $('#tabela-pilha tbody').append("<tr></tr>")
+
+        let pilhaExplodida = pilhaAtual.split('');
+
+        pilhaExplodida.forEach(function (letras) {
+
+            if (naoTerminal.includes(letras)) {
+                let aux = pilhaExplodida.indexOf(letras);
+                pilhaExplodida[aux] = producao.trim();
+            }
+        })
+
+        pilhaExplodida = pilhaExplodida.join('').split("");
+        const primeiroElemento = pilhaExplodida[0];
+        const ultimoElemento = pilhaExplodida[pilhaExplodida.length - 1];
+        pilhaExplodida[0] = ultimoElemento;
+        pilhaExplodida[pilhaExplodida.length - 1] = primeiroElemento;
+        let resultado = pilhaExplodida.join("");
+
+
+        $('#tabela-pilha tbody tr:last').append(`<td>${resultado}</td>`)
+        $('#tabela-pilha tbody tr:last').append(`<td>${entrada}</td>`)
+
+    } else if (entradaAtual == pilhaAtual[0]) {
+
+        if (entradaAtual == "$" || pilhaAtual == "$") {
+            console.log("DEU BOA KRL");
+        }
+
+
+        $('#tabela-pilha tbody tr:last').append(`<td>Ler -> ${entradaAtual}</td>`)
+
+        entrada = entrada.trim().slice(1);
+        resultado = pilhaAtual.slice(1);
+
+        let pilhaExplodida = resultado.split('');
+        const primeiroElemento = pilhaExplodida[0];
+        const ultimoElemento = pilhaExplodida[pilhaExplodida.length - 1];
+        pilhaExplodida[0] = ultimoElemento;
+        pilhaExplodida[pilhaExplodida.length - 1] = primeiroElemento;
+        resultado = pilhaExplodida.join("");        
+
+        $('#tabela-pilha tbody').append("<tr></tr>")
+        $('#tabela-pilha tbody tr:last').append(`<td>${resultado}</td>`)
+        $('#tabela-pilha tbody tr:last').append(`<td>${entrada}</td>`)
+
+    } else {
+        console.log("erro de parsing")
+    }
+
 
 }
