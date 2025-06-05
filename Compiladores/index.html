@@ -45,16 +45,18 @@
                                 </button>
                             </div>
 
-                            <div class="col-md-6 d-grid mt-3">
+                            <div class="col-md-6 d-grid mt-3" id="div-passo">
                                 <button class="btn btn-custom" type="button" onclick="reconhecimento()">Reconhecimento
                                     Passo a
                                     Passo</button>
                             </div>
-                            <div class="col-md-6 d-grid mt-3">
-                                <button class="btn btn-custom" type="button" onclick="reconhecimento()">Reconhecimento
+                            <div class="col-md-6 d-grid mt-3" id="div-direto">
+                                <button class="btn btn-custom" type="button" onclick="reconhecimentoDireto()">Reconhecimento
                                     Direto</button>
                             </div>
-
+                            <div class="col-md-12 d-grid mt-3 d-none" id="div-reiniciar">
+                                <button class="btn btn-custom" type="button" onclick="window.location.reload()">Reiniciar</button>
+                            </div>
                             <div class="col-md-12 mt-3 d-none text-center" id="div-pilha">
                                 <h5>Entrada</h5>
                                 <div class="d-flex justify-content-center">

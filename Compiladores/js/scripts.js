@@ -126,7 +126,6 @@ function montaPilha() {
 
 }
 
-
 function reconhecimento() {
 
     const terminal = ['a', 'b', 'c', 'd', 'ε'];
@@ -135,38 +134,38 @@ function reconhecimento() {
 
     const parsingTable = {
         S: {
-            a: null,
-            b: "bA",
-            c: null,
+            a: "aAb",
+            b: "bBc",
+            c: "cCd",
             d: null,
             $: null
         },
         A: {
-            a: "aAd",
-            b: null,
-            c: "cC",
-            d: "dC",
+            a: "aDa",
+            b: "bAb",
+            c: null,
+            d: null,
             $: null
         },
         B: {
             a: null,
-            b: "bBa",
-            c: "cDc",
-            d: "dA",
+            b: "bCD",
+            c: "ε",
+            d: "ε",
             $: null
         },
         C: {
-            a: "Ab",
-            b: "bDa",
-            c: "Ab",
-            d: "Ab",
-            $: "ε"
+            a: "aDb",
+            b: null,
+            c: "cAB",
+            d: null,
+            $: null
         },
         D: {
             a: null,
             b: null,
-            c: null,
-            d: "dS",
+            c: "cBd",
+            d: "dSa",
             $: null
         },
         a: {
@@ -185,7 +184,6 @@ function reconhecimento() {
             $: "terminar"
         }
     };
-
 
     let entrada = "";
 
@@ -206,53 +204,63 @@ function reconhecimento() {
         acaoAtual.text([pilhaAtual[0]] + "->" + producao);
         $('#tabela-pilha tbody').append("<tr></tr>")
 
-        let pilhaExplodida = pilhaAtual.split('');
+        let pilhaExplodida = pilhaAtual.split('').reverse();
 
-        pilhaExplodida.forEach(function (letras) {
+        pilhaExplodida.splice(-1, 1, producao.trim().split('').reverse().join(''));
+        let resultado = pilhaExplodida.join("").replace("$", "");
+        resultado = resultado.replace("ε", "");
 
-            if (naoTerminal.includes(letras)) {
-                let aux = pilhaExplodida.indexOf(letras);
-                pilhaExplodida[aux] = producao.trim();
-            }
-        })
-
-        pilhaExplodida = pilhaExplodida.join('').split("");
-        const primeiroElemento = pilhaExplodida[0];
-        const ultimoElemento = pilhaExplodida[pilhaExplodida.length - 1];
-        pilhaExplodida[0] = ultimoElemento;
-        pilhaExplodida[pilhaExplodida.length - 1] = primeiroElemento;
-        let resultado = pilhaExplodida.join("");
-
-
-        $('#tabela-pilha tbody tr:last').append(`<td>${resultado}</td>`)
+        $('#tabela-pilha tbody tr:last').append(`<td>$${resultado}</td>`)
         $('#tabela-pilha tbody tr:last').append(`<td>${entrada}</td>`)
+        $('#tabela-pilha tbody tr:last').append(`<td></td>`)
+
+        return true;
 
     } else if (entradaAtual == pilhaAtual[0]) {
 
         if (entradaAtual == "$" || pilhaAtual == "$") {
+
+            $("#div-reiniciar").removeClass('d-none');
+            $("#div-passo").addClass('d-none');
+            $("#div-direto").addClass('d-none');
+            let iteracoes = $('#tabela-pilha tr').length - 1;
+            $('#tabela-pilha tbody tr:last td:last').text(`Aceito em ${iteracoes} iterações`)
+            $('#tabela-pilha').addClass('table-success');
             console.log("DEU BOA KRL");
+            return false;
         }
 
-
-        $('#tabela-pilha tbody tr:last').append(`<td>Ler -> ${entradaAtual}</td>`)
+        $('#tabela-pilha tbody tr:last td:last').text(`Ler -> ${entradaAtual}`)
 
         entrada = entrada.trim().slice(1);
-        resultado = pilhaAtual.slice(1);
-
-        let pilhaExplodida = resultado.split('');
-        const primeiroElemento = pilhaExplodida[0];
-        const ultimoElemento = pilhaExplodida[pilhaExplodida.length - 1];
-        pilhaExplodida[0] = ultimoElemento;
-        pilhaExplodida[pilhaExplodida.length - 1] = primeiroElemento;
-        resultado = pilhaExplodida.join("");        
-
+        resultado = pilhaAtual.slice(1).split('').reverse().join('');
+        resultado = resultado.replace("ε", "");
         $('#tabela-pilha tbody').append("<tr></tr>")
         $('#tabela-pilha tbody tr:last').append(`<td>${resultado}</td>`)
         $('#tabela-pilha tbody tr:last').append(`<td>${entrada}</td>`)
+        $('#tabela-pilha tbody tr:last').append(`<td></td>`)
+        $('#pilha li:first').remove();
+        return true;
 
     } else {
+
+        let iteracoes = $('#tabela-pilha tr').length - 1;
+        $('#tabela-pilha').addClass('table-danger');
+        $('#tabela-pilha tbody tr:last td:last').text(`Erro em ${iteracoes} iterações`)
+        $("#div-reiniciar").removeClass('d-none');
+        $("#div-passo").addClass('d-none');
+        $("#div-direto").addClass('d-none');
         console.log("erro de parsing")
+        return false;
     }
 
+
+}
+
+function reconhecimentoDireto() {
+
+    while (reconhecimento()) {
+       
+    }
 
 }
