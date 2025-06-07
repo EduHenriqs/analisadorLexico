@@ -6,7 +6,7 @@ function gerarSentenca(producao) {
     if (sentenca[1].trim() == "ε") {
         $("#tabela-gera-sentenca").addClass("table-success");
         $("#msg-finalizado").removeClass("d-none");
-        var resultado = input.val().replace("C", "");
+        var resultado = input.val().replace("D", "");
         input.val(resultado);
 
         setTimeout(() => {
@@ -104,7 +104,7 @@ function abrirModal() {
 
     $(".modal-body").html('');
 
-    $(".modal-body").html('<div class="row d-none" id="msg-finalizado"><div class="col-md-12 text-center"><h4>Sentença Finalizada</h4></div></div><table class="table table-bordered" id="tabela-gera-sentenca"><thead class="text-center"><th>-</th><th>a</th><th>b</th><th>c</th><th>d</th><th>$</th></thead><tbody class="text-center"><tr class="table-success" id="S"><td>S</td><td>-</td><td onclick="gerarSentenca(this)" class="cursor-pointer">S -> bA</td><td>-</td><td>-</td><td>-</td></tr><tr id="A"><td>A</td><td>A -> aAd</td><td>-</td><td>A -> cC</td><td>A -> dC</td><td>-</td></tr><tr id="B"><td>B</td><td>-</td><td>B -> bBa</td><td>B -> cDc</td><td>B -> dA</td><td>-</td></tr><tr id="C"><td>C</td><td>C -> Ab</td><td>C -> bDa</td><td>C -> Ab</td><td>C -> Ab</td><td>C -> ε</td></tr><tr id="D"><td>D</td><td>-</td><td>D -> bC</td><td>-</td><td>D -> dS</td><td>-</td></tr></tbody></table><label for="">Sentença Atual</label><input readonly type="text" name="sentenca_prov" id="sentenca_prov" class="form-control disabled" value=""></input>');
+    $(".modal-body").html('<div class="row d-none" id="msg-finalizado"><div class="col-md-12 text-center"><h4>Sentença Finalizada</h4></div></div><table class="table table-bordered" id="tabela-gera-sentenca"><thead class="text-center"><th>-</th><th>a</th><th>b</th><th>c</th><th>d</th><th>$</th></thead><tbody class="text-center"><tr class="table-success" id="S"><td>S</td><td>-</td><td onclick="gerarSentenca(this)" class="cursor-pointer">S -> bA</td><td>-</td><td>-</td><td>-</td></tr><tr id="A"><td>A</td><td>A -> aBc</td><td>-</td><td>A -> cAd</td><td>-</td><td>-</td></tr><tr id="B"><td>B</td><td>B -> aDb</td><td>B -> bbC</td><td>-</td><td>-</td><td>-</td></tr><tr id="C"><td>C</td><td>-</td><td>C -> bCa</td><td>C -> cS</td><td>C -> dBa</td><td>-</td></tr><tr id="D"><td>D</td><td>D -> aDb</td><td>D -> ε</td><td>-</td><td>-</td><td>-</td></tr></tbody></table><label for="">Sentença Atual</label><input readonly type="text" name="sentenca_prov" id="sentenca_prov" class="form-control disabled" value=""></input>  ');
 }
 
 function montaPilha() {
@@ -134,38 +134,38 @@ function reconhecimento() {
 
     const parsingTable = {
         S: {
-            a: "aAb",
-            b: "bBc",
-            c: "cCd",
-            d: null,
-            $: null
-        },
-        A: {
-            a: "aDa",
-            b: "bAb",
+            a: null,
+            b: "bA",
             c: null,
             d: null,
             $: null
         },
-        B: {
-            a: null,
-            b: "bCD",
-            c: "ε",
-            d: "ε",
-            $: null
-        },
-        C: {
-            a: "aDb",
+        A: {
+            a: "aBc",
             b: null,
-            c: "cAB",
+            c: "cAd",
             d: null,
             $: null
         },
-        D: {
+        B: {
+            a: "aDb",
+            b: "bbC",
+            c: null,
+            d: null,
+            $: null
+        },
+        C: {
             a: null,
-            b: null,
-            c: "cBd",
-            d: "dSa",
+            b: "bCa",
+            c: "cS",
+            d: "dBa",
+            $: null
+        },
+        D: {
+            a: "aDb",
+            b: "ε",
+            c: null,
+            d: null,
             $: null
         },
         a: {
@@ -216,7 +216,7 @@ function reconhecimento() {
 
         return true;
 
-    } else if (entradaAtual == pilhaAtual[0]) {
+    } else if (entradaAtual == pilhaAtual[0] && (terminal.includes(entradaAtual) || finalPilha.includes(entradaAtual)) && (terminal.includes(pilhaAtual[0]) || finalPilha.includes(pilhaAtual[0]))) {
 
         if (entradaAtual == "$" || pilhaAtual == "$") {
 
@@ -226,7 +226,21 @@ function reconhecimento() {
             let iteracoes = $('#tabela-pilha tr').length - 1;
             $('#tabela-pilha tbody tr:last td:last').text(`Aceito em ${iteracoes} iterações`)
             $('#tabela-pilha').addClass('table-success');
-            console.log("DEU BOA KRL");
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top-end",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: "success",
+                title: `Aceito em ${iteracoes} iterações !`
+            });
             return false;
         }
 
@@ -250,7 +264,25 @@ function reconhecimento() {
         $("#div-reiniciar").removeClass('d-none');
         $("#div-passo").addClass('d-none');
         $("#div-direto").addClass('d-none');
-        console.log("erro de parsing")
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "warning",
+            title: `Erro em ${iteracoes} iterações !`
+        });
+
+
+
         return false;
     }
 
@@ -260,7 +292,7 @@ function reconhecimento() {
 function reconhecimentoDireto() {
 
     while (reconhecimento()) {
-       
+
     }
 
 }
